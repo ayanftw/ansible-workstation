@@ -1,0 +1,61 @@
+- hosts: localhost
+  tasks:
+      - name: Add Ansible PPA
+        become: yes
+        apt_repository:
+            repo: ppa:ansible/ansible
+            state: present
+      - name: Install Ansible
+        become: yes
+        package: 
+            name: ansible
+            state: latest
+      - name: Add PPAs
+        become: yes
+        apt_repository:
+                repo: "{{item}}"
+                state: present
+        with_items:
+                - ppa:fish-shell/release-3
+                - ppa:neovim-ppa/stable
+      - name: Install packages
+        become: yes
+        package:
+                name: "{{item}}"
+                state: latest
+        with_items:
+                - git
+                - mercurial
+                - neovim
+                - fish
+                - firefox
+                - tilix
+                - python-psutil
+                - python3-psutil
+                - silversearcher-ag
+                - ranger
+                - gnome-tweak-tool
+      - name: Remove packages
+        become: yes
+        package:
+                name: "{{item}}"
+                state: absent
+        with_items:
+                - thunderbird
+                - vim
+      - name: Enable Night Light
+        dconf:
+                key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
+                value: 'true'
+      - name: Set Night Light Temperature
+        dconf:
+                key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
+                value: uint32 3500
+      - name: Disable switch-group
+        dconf:
+                key: /org/gnome/desktop/wm/keybindings/switch-group
+                value:  '@as []'
+      - name: Disable switch-group-backward
+        dconf:
+                key: /org/gnome/desktop/wm/keybindings/switch-group-backward
+                value:  '@as []'
