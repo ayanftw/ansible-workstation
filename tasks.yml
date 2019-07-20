@@ -43,6 +43,16 @@
         with_items:
                 - thunderbird
                 - vim
+      - name: Get Powerline fonts
+        git:
+            repo: 'https://github.com/powerline/fonts.git'
+            dest: /tmp/fonts
+            depth: 1
+      - name: Install Powerline fonts
+        command: ./install.sh
+        args:
+            chdir: /tmp/fonts
+            creates: '~/.local/share/fonts/Source Code Pro for Powerline.otf'
       - name: Change dconf settings
         dconf:
             key: "{{ item.value.key }}"
@@ -71,3 +81,9 @@
             intellihide:
                 key: /org/gnome/shell/extensions/dash-to-dock/intellihide
                 value: 'false'
+            show_seconds:
+                key: /org/gnome/desktop/interface/clock-show-seconds
+                value: 'true'
+            set_monospace_font:
+                key: /org/gnome/desktop/interface/monospace-font-name
+                value: '"Source Code Pro for Powerline Medium 16"'
