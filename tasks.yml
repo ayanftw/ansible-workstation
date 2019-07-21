@@ -10,6 +10,13 @@
         package: 
             name: ansible
             state: latest
+      - name: Add Apt keys
+        become: yes
+        apt_key:
+            url: "{{ item }}"
+            state: present
+        with_items:
+            - https://download.docker.com/linux/ubuntu/gpg
       - name: Add PPAs
         become: yes
         apt_repository:
@@ -18,6 +25,8 @@
         with_items:
                 - ppa:fish-shell/release-3
                 - ppa:neovim-ppa/stable
+                #- "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+                - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable test"
       - name: Install packages
         become: yes
         package:
@@ -35,6 +44,10 @@
                 - silversearcher-ag
                 - ranger
                 - gnome-tweak-tool
+                
+                - docker-ce
+                - docker-ce-cli
+                - containerd.io
       - name: Remove packages
         become: yes
         package:
@@ -43,6 +56,13 @@
         with_items:
                 - thunderbird
                 - vim
+      - name: Set user shell + groups
+        become: yes
+        user:
+            name: "{{ ansible_user }}"
+            groups: adm,docker
+            append: yes
+            shell: /usr/bin/fish
       - name: Get Powerline fonts
         git:
             repo: 'https://github.com/powerline/fonts.git'
