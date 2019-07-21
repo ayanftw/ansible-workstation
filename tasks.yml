@@ -87,3 +87,7 @@
             set_monospace_font:
                 key: /org/gnome/desktop/interface/monospace-font-name
                 value: '"Source Code Pro for Powerline Medium 16"'
+            set_dock_favourites:
+                key: /org/gnome/shell/favorite-apps
+                value: "['firefox.desktop', 'com.gexperts.Tilix.desktop']"
+
