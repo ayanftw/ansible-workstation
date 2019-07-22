@@ -5,7 +5,7 @@
         apt_key:
             url: "{{ item }}"
             state: present
-        with_items:
+        loop:
             - https://packages.microsoft.com/keys/microsoft.asc
             - https://packages.cloud.google.com/apt/doc/apt-key.gpg
       - name: Add PPAs
@@ -13,7 +13,7 @@
         apt_repository:
                 repo: "{{item}}"
                 state: present
-        with_items:
+        loop:
                 - deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "{{ansible_lsb.codename}}" main
                 - deb https://apt.kubernetes.io/ kubernetes-xenial main
       - name: Install packages
@@ -21,7 +21,7 @@
         package:
                 name: "{{item}}"
                 state: latest
-        with_items:
+        loop:
                 - azure-cli
                 - kubectl
                 - golang
@@ -36,36 +36,28 @@
         file:
             name: "{{ item }}"
             state: directory
-        with_items:
+        loop:
             - ~/.local/bin
             - ~/.config/fish/completions
       - name: Setup symlinks
         file:
-            src: "{{ item.value.src }}"
-            dest: "{{ item.value.dest }}"
+            src: "{{ item.src }}"
+            dest: "{{ item.dest }}"
             state: link
-        with_dict:
-            kubectx:
-                src: /opt/kubectx/kubectx
-                dest: ~/.local/bin/kubectx
-            kubens:
-                src: /opt/kubectx/kubens
-                dest: ~/.local/bin/kubens
-            fish_completion_kubectx:
-                src: /opt/kubectx/completion/kubectx.fish
-                dest: ~/.config/fish/completions/kubectx.fish
-            fish_completion_kubens:
-                src: /opt/kubectx/completion/kubens.fish
-                dest: ~/.config/fish/completions/kubens.fish
+        loop:
+            - { src: /opt/kubectx/kubectx, dest: ~/.local/bin/kubectx }
+            - { src: /opt/kubectx/kubens, dest: ~/.local/bin/kubens }
+            - { src: /opt/kubectx/completion/kubectx.fish, dest: ~/.config/fish/completions/kubectx.fish }
+            - { src: /opt/kubectx/completion/kubens.fish, dest: ~/.config/fish/completions/kubens.fish }
       - name: Install Go packages
         command: go get -u "{{ item }}"
-        with_items:
+        loop:
             - github.com/wallix/awless
             - github.com/tsenart/vegeta
             - github.com/aykamko/tag
       - name: Install Pipx packages
         command: pipx install "{{ item }}"
-        with_items:
+        loop:
             - awscli
             - httpie
             - saws
