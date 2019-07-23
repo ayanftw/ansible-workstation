@@ -26,6 +26,12 @@
                 - kubectl
                 - golang
                 - amazon-ecr-credential-helper
+      - name: Install snap packages
+        snap:
+            name:
+                - heroku
+                - helm
+            state: present
       - name: Get Kubectx/Kubens
         become: yes
         git:

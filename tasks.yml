@@ -53,6 +53,10 @@
         command: pipx install "{{ item }}"
         loop:
             - docker-compose
+      - name: Install snap packages
+        snap:
+            name: slack
+            state: present
       - name: Remove packages
         become: yes
         package:
@@ -73,6 +77,7 @@
             repo: 'https://github.com/ryanoasis/nerd-fonts'
             dest: /tmp/fonts
             depth: 1
+            recursive: no
       - name: Install Source Code Pro
         command: ./install.sh SourceCodePro
         args:
@@ -96,5 +101,5 @@
 
             - { key: /org/gnome/desktop/interface/clock-show-seconds, value: 'true' }
             - { key: /org/gnome/desktop/interface/monospace-font-name, value: '"SauceCodePro Nerd Font 16"' }
-            - { key: /org/gnome/shell/favorite-apps, value: "['firefox.desktop', 'com.gexperts.Tilix.desktop']" }
+            - { key: /org/gnome/shell/favorite-apps, value: "['slack_slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
 
