@@ -30,8 +30,8 @@
       - name: Install packages
         become: yes
         package:
-                name: "{{item}}"
-                state: latest
+            name: "{{item}}"
+            state: latest
         with_items:
                 - git
                 - mercurial
@@ -39,8 +39,16 @@
                 - fish
                 - firefox
                 - tilix
+
+                - python-dev
+                - python3-dev
+                - python3-venv
                 - python-psutil
                 - python3-psutil
+                - python3-pip
+                - python-distutils-extra
+                - python3-distutils-extra
+
                 - silversearcher-ag
                 - ranger
                 - gnome-tweak-tool
@@ -48,6 +56,14 @@
                 - docker-ce
                 - docker-ce-cli
                 - containerd.io
+      - name: Install pip packages
+        become: yes
+        pip:
+            executable: pip3
+            state: latest
+            name:
+                - virtualfish
+                - pipx
       - name: Remove packages
         become: yes
         package:
