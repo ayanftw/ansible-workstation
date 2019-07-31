@@ -39,6 +39,9 @@
             - fish
             - firefox
             - tilix
+            - htop
+            - exfat-fuse
+            - exfat-utils
 
             - python-dev
             - python3-dev
@@ -69,6 +72,7 @@
         loop:
             - docker-compose
       - name: Install snap packages
+        become: yes
         snap:
             name: slack
             state: present

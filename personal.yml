@@ -1,22 +1,33 @@
 - hosts: localhost
   tasks:
-      - name: Add syncthing key
+      - name: Add Apt keys
         become: yes
         apt_key:
-            url: https://syncthing.net/release-key.txt
+            url: "{{ item }}"
             state: present
-      - name: Add syncthing repo
+        loop:
+            - https://syncthing.net/release-key.txt
+            - https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc
+      - name: Add repos
         become: yes
         apt_repository:
-            repo: deb https://apt.syncthing.net/ syncthing stable
             state: present
+            repo: "{{ item }}"
+        loop:
+            - deb https://apt.syncthing.net/ syncthing stable
+            - ppa:pmjdebruijn/darktable-release
+            - deb https://deb.torproject.org/torproject.org bionic main
+            - deb-src https://deb.torproject.org/torproject.org bionic main
       - name: Install packages
         become: yes
         package:
-                name: "{{item}}"
-                state: latest
-        with_items:
-                - syncthing
+            state: latest
+            name: 
+              - syncthing
+              - darktable
+              - rapid-photo-downloader
+              - tor
+              - deb.torproject.org-keyring
       - name: Enable Syncthing
         become: yes
         systemd:
