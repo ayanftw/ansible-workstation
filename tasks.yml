@@ -42,6 +42,7 @@
             - htop
             - exfat-fuse
             - exfat-utils
+            - flatpak
 
             - python-dev
             - python3-dev
@@ -75,6 +76,17 @@
         become: yes
         snap:
             name: slack
+            state: present
+      - name: Install the flathub repository
+        become: yes
+        flatpak_remote:
+            name: flathub 
+            flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+            state: present
+      - name: Install GIMP
+        become: yes
+        flatpak:
+            name: org.gimp.GIMP
             state: present
       - name: Remove packages
         become: yes
