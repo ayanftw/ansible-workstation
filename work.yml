@@ -1,4 +1,6 @@
 - hosts: localhost
+  vars:
+      - op_version: 0.5.7
   tasks:
       - name: Add Apt keys
         become: yes
@@ -72,7 +74,8 @@
             - awscli
             - httpie
             - saws
-
-            
-
-
+      - name: Install 1password
+        unarchive:
+            src: https://cache.agilebits.com/dist/1P/op/pkg/v{{ op_version }}/op_linux_amd64_v{{ op_version }}.zip
+            dest: ~/.local/bin
+            remote_src: yes
