@@ -8,13 +8,16 @@
         loop:
             - https://packages.microsoft.com/keys/microsoft.asc
             - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+            - https://deb.goaccess.io/gnugpg.key
       - name: Add PPAs
         become: yes
         apt_repository:
                 repo: "{{item}}"
                 state: present
         loop:
-                - deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "{{ansible_lsb.codename}}" main
+                - "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ {{ansible_lsb.codename}} main"
+                - "deb http://deb.goaccess.io/ bionic main"
+                #- "deb http://deb.goaccess.io/ {{ansible_lsb.codename}} main"
                 - deb https://apt.kubernetes.io/ kubernetes-xenial main
       - name: Install packages
         become: yes
@@ -26,6 +29,8 @@
                 - kubectl
                 - golang
                 - amazon-ecr-credential-helper
+                - goaccess
+                - virt-manager
       - name: Install snap packages
         snap:
             name:
