@@ -1,4 +1,6 @@
 - hosts: localhost
+  vars:
+      - op_version: 0.5.7
   tasks:
       - name: Add Apt keys
         become: yes
@@ -8,13 +10,16 @@
         loop:
             - https://packages.microsoft.com/keys/microsoft.asc
             - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+            - https://deb.goaccess.io/gnugpg.key
       - name: Add PPAs
         become: yes
         apt_repository:
                 repo: "{{item}}"
                 state: present
         loop:
-                - deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "{{ansible_lsb.codename}}" main
+                - "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ {{ansible_lsb.codename}} main"
+                - "deb http://deb.goaccess.io/ bionic main"
+                #- "deb http://deb.goaccess.io/ {{ansible_lsb.codename}} main"
                 - deb https://apt.kubernetes.io/ kubernetes-xenial main
       - name: Install packages
         become: yes
@@ -26,6 +31,8 @@
                 - kubectl
                 - golang
                 - amazon-ecr-credential-helper
+                - goaccess
+                - virt-manager
       - name: Install snap packages
         snap:
             name:
@@ -67,7 +74,8 @@
             - awscli
             - httpie
             - saws
-
-            
-
-
+      - name: Install 1password
+        unarchive:
+            src: https://cache.agilebits.com/dist/1P/op/pkg/v{{ op_version }}/op_linux_amd64_v{{ op_version }}.zip
+            dest: ~/.local/bin
+            remote_src: yes
