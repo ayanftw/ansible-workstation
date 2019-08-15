@@ -1,15 +1,5 @@
 - hosts: localhost
   tasks:
-      - name: Add Ansible PPA
-        become: yes
-        apt_repository:
-            repo: ppa:ansible/ansible
-            state: present
-      - name: Install Ansible
-        become: yes
-        package: 
-            name: ansible
-            state: latest
       - name: Add Apt keys
         become: yes
         apt_key:
@@ -39,10 +29,12 @@
             - fish
             - firefox
             - tilix
+            - tmux
             - htop
             - exfat-fuse
             - exfat-utils
             - flatpak
+            - gnome-software-plugin-flatpak
 
             - python-dev
             - python3-dev
@@ -72,22 +64,21 @@
         command: pipx install "{{ item }}"
         loop:
             - docker-compose
-      - name: Install snap packages
-        become: yes
-        snap:
-            name: slack
-            state: present
+            - gnome-shell-install-extension
       - name: Install the flathub repository
         become: yes
         flatpak_remote:
             name: flathub 
             flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
             state: present
-      - name: Install GIMP
+      - name: Install Flatpak apps
         become: yes
         flatpak:
-            name: org.gimp.GIMP
+            name: "{{ item }}"
             state: present
+        loop:
+            - org.gimp.GIMP
+            - com.slack.Slack
       - name: Remove packages
         become: yes
         package:
@@ -114,6 +105,19 @@
         args:
             chdir: /tmp/fonts
             #creates: '~/.local/share/fonts/Source Code Pro for Powerline.otf'
+      - name: create directory for Gnome shell extensions
+        file:
+            path: /tmp/gnome-shell-extensions
+            state: directory
+      - name: download Gnome shell extensions
+        get_url:
+            url: https://extensions.gnome.org/extension-data/{{ item }}
+            dest: /tmp/gnome-shell-extensions/
+        loop:
+            - Move_Clockrmy.pobox.com.v19.shell-extension.zip
+            - drive-menugnome-shell-extensions.gcampax.github.com.v40.shell-extension.zip
+      - name: Install Gnome shell extensions
+        command: gnome-shell-install-extension /tmp/gnome-shell-extensions/*.zip
       - name: Change dconf settings
         dconf:
             key: "{{ item.key }}"
@@ -132,5 +136,8 @@
 
             - { key: /org/gnome/desktop/interface/clock-show-seconds, value: 'true' }
             - { key: /org/gnome/desktop/interface/monospace-font-name, value: '"SauceCodePro Nerd Font 16"' }
-            - { key: /org/gnome/shell/favorite-apps, value: "['slack_slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
+            - { key: /org/gnome/shell/favorite-apps, value: "['com.slack.Slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
+
+            - { key: org/gnome/shell/extensions/desktop-icons/show-trash, value: 'false' }
+            - { key: org/gnome/shell/extensions/desktop-icons/show-home, value: 'false' }
 
