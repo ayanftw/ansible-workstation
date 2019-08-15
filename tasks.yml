@@ -1,3 +1,4 @@
+
 - hosts: localhost
   tasks:
       - name: Add Apt keys
@@ -127,7 +128,9 @@
             - Move_Clockrmy.pobox.com.v19.shell-extension.zip
             - drive-menugnome-shell-extensions.gcampax.github.com.v40.shell-extension.zip
       - name: Install Gnome shell extensions
-        command: gnome-shell-install-extension /tmp/gnome-shell-extensions/*.zip
+        command: gnome-shell-install-extension {{ item }}
+        with_fileglob:
+            - /tmp/gnome-shell-extensions/*.zip
       - name: Change dconf settings
         dconf:
             key: "{{ item.key }}"
@@ -148,6 +151,16 @@
             - { key: /org/gnome/desktop/interface/monospace-font-name, value: '"SauceCodePro Nerd Font 16"' }
             - { key: /org/gnome/shell/favorite-apps, value: "['com.slack.Slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
 
-            - { key: org/gnome/shell/extensions/desktop-icons/show-trash, value: 'false' }
-            - { key: org/gnome/shell/extensions/desktop-icons/show-home, value: 'false' }
+            - { key: /org/gnome/shell/extensions/desktop-icons/show-trash, value: 'false' }
+            - { key: /org/gnome/shell/extensions/desktop-icons/show-home, value: 'false' }
+
+            # Tilix settings
+            - { key: /com/gexperts/Tilix/terminal-title-show-when-single, value: 'true' }
+            - { key: /com/gexperts/Tilix/theme-variant, value: '"dark"' }
+            - { key: /com/gexperts/Tilix/quake-specific-monitor, value: 0 }
+            - { key: /com/gexperts/Tilix/terminal-title-style, value: '"none"' }
+            - { key: /com/gexperts/Tilix/window-style, value: '"borderless"' }
+            - { key: /com/gexperts/Tilix/use-overlay-scrollbar, value: 'true' }
+            - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-right, value: '"disabled"' }
+            - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-left, value: '"disabled"' }
 
