@@ -164,3 +164,15 @@
             - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-right, value: '"disabled"' }
             - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-left, value: '"disabled"' }
 
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/foreground-color, value: '"#EFEFEF"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/use-system-font, value: 'true' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/badge-color, value: '"#AC7EA8"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/badge-color-set, value: 'true' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/cursor-colors-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/bold-color-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/background-transparency-percent, value: 10 }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/background-color, value: '"#000000000000"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/highlight-colors-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/use-theme-colors, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/visible-name, value: '"dark"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/palette, value: "['#000000', '#CC0000', '#4D9A05', '#C3A000', '#3464A3', '#754F7B', '#05979A', '#D3D6CF', '#545652', '#EF2828', '#89E234', '#FBE84F', '#729ECF', '#AC7EA8', '#34E2E2', '#EDEDEB']" }
