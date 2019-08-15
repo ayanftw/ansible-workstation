@@ -7,7 +7,7 @@
             url: "{{ item }}"
             state: present
         loop:
-            - https://download.docker.com/linux/ubuntu/gpg
+            - https://download.docker.com/linux/{{ ansible_lsb.id|lower }}/gpg
       - name: Add PPAs
         become: yes
         apt_repository:
@@ -17,7 +17,7 @@
             - ppa:fish-shell/release-3
             - ppa:neovim-ppa/stable
               #- "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
-            - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable test"
+            - "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_lsb.id|lower }} {{ ansible_lsb.codename }} stable test"
       - name: Install packages
         become: yes
         package:
