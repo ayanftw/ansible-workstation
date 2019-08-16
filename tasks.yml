@@ -1,22 +1,13 @@
+
 - hosts: localhost
   tasks:
-      - name: Add Ansible PPA
-        become: yes
-        apt_repository:
-            repo: ppa:ansible/ansible
-            state: present
-      - name: Install Ansible
-        become: yes
-        package: 
-            name: ansible
-            state: latest
       - name: Add Apt keys
         become: yes
         apt_key:
             url: "{{ item }}"
             state: present
         loop:
-            - https://download.docker.com/linux/ubuntu/gpg
+            - https://download.docker.com/linux/{{ ansible_lsb.id|lower }}/gpg
       - name: Add PPAs
         become: yes
         apt_repository:
@@ -26,7 +17,7 @@
             - ppa:fish-shell/release-3
             - ppa:neovim-ppa/stable
               #- "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
-            - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable test"
+            - "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_lsb.id|lower }} {{ ansible_lsb.codename }} stable test"
       - name: Install packages
         become: yes
         package:
@@ -39,10 +30,12 @@
             - fish
             - firefox
             - tilix
+            - tmux
             - htop
             - exfat-fuse
             - exfat-utils
             - flatpak
+            - gnome-software-plugin-flatpak
             - apt-listchanges
 
             - python-dev
@@ -73,22 +66,21 @@
         command: pipx install "{{ item }}"
         loop:
             - docker-compose
-      - name: Install snap packages
-        become: yes
-        snap:
-            name: slack
-            state: present
+            - gnome-shell-install-extension
       - name: Install the flathub repository
         become: yes
         flatpak_remote:
             name: flathub 
             flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
             state: present
-      - name: Install GIMP
+      - name: Install Flatpak apps
         become: yes
         flatpak:
-            name: org.gimp.GIMP
+            name: "{{ item }}"
             state: present
+        loop:
+            - org.gimp.GIMP
+            - com.slack.Slack
       - name: Remove packages
         become: yes
         package:
@@ -125,6 +117,21 @@
         args:
             chdir: /tmp/fonts
             #creates: '~/.local/share/fonts/Source Code Pro for Powerline.otf'
+      - name: create directory for Gnome shell extensions
+        file:
+            path: /tmp/gnome-shell-extensions
+            state: directory
+      - name: download Gnome shell extensions
+        get_url:
+            url: https://extensions.gnome.org/extension-data/{{ item }}
+            dest: /tmp/gnome-shell-extensions/
+        loop:
+            - Move_Clockrmy.pobox.com.v19.shell-extension.zip
+            - drive-menugnome-shell-extensions.gcampax.github.com.v40.shell-extension.zip
+      - name: Install Gnome shell extensions
+        command: gnome-shell-install-extension {{ item }}
+        with_fileglob:
+            - /tmp/gnome-shell-extensions/*.zip
       - name: Change dconf settings
         dconf:
             key: "{{ item.key }}"
@@ -143,5 +150,30 @@
 
             - { key: /org/gnome/desktop/interface/clock-show-seconds, value: 'true' }
             - { key: /org/gnome/desktop/interface/monospace-font-name, value: '"SauceCodePro Nerd Font 16"' }
-            - { key: /org/gnome/shell/favorite-apps, value: "['slack_slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
+            - { key: /org/gnome/shell/favorite-apps, value: "['com.slack.Slack.desktop', 'firefox.desktop', 'com.gexperts.Tilix.desktop']" }
 
+            - { key: /org/gnome/shell/extensions/desktop-icons/show-trash, value: 'false' }
+            - { key: /org/gnome/shell/extensions/desktop-icons/show-home, value: 'false' }
+
+            # Tilix settings
+            - { key: /com/gexperts/Tilix/terminal-title-show-when-single, value: 'true' }
+            - { key: /com/gexperts/Tilix/theme-variant, value: '"dark"' }
+            - { key: /com/gexperts/Tilix/quake-specific-monitor, value: 0 }
+            - { key: /com/gexperts/Tilix/terminal-title-style, value: '"none"' }
+            - { key: /com/gexperts/Tilix/window-style, value: '"borderless"' }
+            - { key: /com/gexperts/Tilix/use-overlay-scrollbar, value: 'true' }
+            - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-right, value: '"disabled"' }
+            - { key: /com/gexperts/Tilix/keybindings/session-switch-to-terminal-left, value: '"disabled"' }
+
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/foreground-color, value: '"#EFEFEF"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/use-system-font, value: 'true' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/badge-color, value: '"#AC7EA8"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/badge-color-set, value: 'true' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/cursor-colors-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/bold-color-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/background-transparency-percent, value: 10 }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/background-color, value: '"#000000000000"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/highlight-colors-set, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/use-theme-colors, value: 'false' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/visible-name, value: '"dark"' }
+            - { key: /com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d/palette, value: "['#000000', '#CC0000', '#4D9A05', '#C3A000', '#3464A3', '#754F7B', '#05979A', '#D3D6CF', '#545652', '#EF2828', '#89E234', '#FBE84F', '#729ECF', '#AC7EA8', '#34E2E2', '#EDEDEB']" }

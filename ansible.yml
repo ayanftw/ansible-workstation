@@ -1,0 +1,12 @@
+- hosts: localhost
+  tasks:
+      - name: Add Ansible PPA
+        become: yes
+        apt_repository:
+            repo: ppa:ansible/ansible
+            state: present
+      - name: Install Ansible
+        become: yes
+        package: 
+            name: ansible
+            state: latest
