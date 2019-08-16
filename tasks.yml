@@ -43,6 +43,7 @@
             - exfat-fuse
             - exfat-utils
             - flatpak
+            - apt-listchanges
 
             - python-dev
             - python3-dev
