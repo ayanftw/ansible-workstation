@@ -25,6 +25,7 @@
             state: latest
         loop:
             - git
+            - git-flow
             - mercurial
             - neovim
             - fish
@@ -36,9 +37,9 @@
             - exfat-utils
             - flatpak
             - gnome-software-plugin-flatpak
-            - firmware-atheros
             - rsync
             - autossh
+            - apt-listchanges
 
             - python-dev
             - python3-dev
@@ -56,6 +57,12 @@
             - docker-ce
             - docker-ce-cli
             - containerd.io
+      - name: Install Dell XPS 13 wifi chip firmware
+        become: yes
+        package:
+            name: firmware-atheros
+            state: latest
+        when: "'XPS 13' in ansible_product_name"
       - name: Install pip packages
         become: yes
         pip:
